@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GADA – Groupement Algérien de Développement Agricole</title>
+    <!-- Tailwind + Lucide + Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Merriweather:wght@400;700;900&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== VARIABLES ===== */
+        :root {
+            --primary: #284B2A;
+            --secondary: #234123;
+            --accent-red: #A8413B;
+            --accent-gold: #A68A38;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        h1, h2, h3, h4, .heading {
+            font-family: 'Merriweather', serif;
+            font-weight: 700;
+        }
+        .font-arabic {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        /* ===== RTL SUPPORT ===== */
+        [dir="rtl"] .rtl-flip { transform: scaleX(-1); }
+        [dir="rtl"] .space-x-reverse { --tw-space-x-reverse: 1; }
+
+        /* ===== ANIMATIONS (subdued) ===== */
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(15px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up {
+            animation: fadeUp 0.7s ease forwards;
+        }
+
+        /* ===== HOVER EFFECTS (minimal) ===== */
+        .hover-lift {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px -8px rgba(0,0,0,0.1);
+        }
+
+        /* ===== NAVBAR UNDERLINE ===== */
+        .nav-link {
+            position: relative;
+            font-weight: 500;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-gold);
+            transition: width 0.2s ease;
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        /* ===== HERO GRADIENT (calm) ===== */
+        .hero-overlay {
+            background: linear-gradient(135deg, rgba(40,75,42,0.97) 0%, rgba(35,65,35,0.95) 100%);
+        }
+
+        /* ===== COUNTERS ===== */
+        .counter {
+            transition: all 0.3s;
+        }
+
+        /* ===== DARK MODE TWEAKS ===== */
+        .dark .dark\:text-gold {
+            color: var(--accent-gold);
+        }
+        .dark .dark\:border-gold {
+            border-color: var(--accent-gold);
+        }
+
+        /* ===== UTILITY ===== */
+        .section-title {
+            font-size: 2.25rem;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+        .gold-underline {
+            width: 5rem;
+            height: 0.25rem;
+            background-color: var(--accent-gold);
+            margin: 1.5rem auto 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
+
+    <!-- ===== LANGUAGE & THEME TOGGLE (fixed, accessible) ===== -->
+    <div class="fixed top-4 right-4 z-50 flex items-center space-x-2 rtl:space-x-reverse bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg px-3 py-1.5">
+        <!-- Language dropdown -->
+        <div class="relative" id="langDropdown">
+            <button id="langToggleBtn" class="flex items-center space-x-1 rtl:space-x-reverse px-3 py-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700" aria-label="Select language" aria-expanded="false">
+                <i data-lucide="globe" class="w-4 h-4"></i>
+                <span id="currentLangDisplay" class="text-sm font-medium">EN</span>
+            </button>
+            <div id="langMenu" class="absolute hidden right-0 mt-2 w-32 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 z-50">
+                <button data-lang="en" class="lang-option w-full text-left px-4 py-2 hover:bg-green-50 dark:hover:bg-gray-700 rounded-t-lg flex items-center justify-between text-sm">
+                    English <i data-lucide="check" class="w-4 h-4 hidden" id="check-en"></i>
+                </button>
+                <button data-lang="fr" class="lang-option w-full text-left px-4 py-2 hover:bg-green-50 dark:hover:bg-gray-700 flex items-center justify-between text-sm">
+                    Français <i data-lucide="check" class="w-4 h-4 hidden" id="check-fr"></i>
+                </button>
+                <button data-lang="ar" class="lang-option w-full text-left px-4 py-2 hover:bg-green-50 dark:hover:bg-gray-700 rounded-b-lg flex items-center justify-between text-sm">
+                    العربية <i data-lucide="check" class="w-4 h-4 hidden" id="check-ar"></i>
+                </button>
+            </div>
+        </div>
+        <div class="h-5 w-px bg-gray-300 dark:bg-gray-600"></div>
+        <!-- Theme toggle -->
+        <button id="themeToggleBtn" class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700" aria-label="Toggle dark mode">
+            <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
+            <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
+        </button>
+    </div>
+
+    <!-- ===== HEADER / NAVBAR (professional, sticky, translucent) ===== -->
+    <header id="mainHeader" class="fixed top-0 left-0 w-full z-40 transition-all duration-300 bg-transparent">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <!-- Logo area with institutional subtitle -->
+                <div class="flex items-center space-x-3 rtl:space-x-reverse">
+                    <div class="w-12 h-12 bg-[#284B2A] rounded-lg flex items-center justify-center text-white text-2xl font-bold shadow-md">
+                        <!-- Official emblem placeholder (SVG later) -->
+                        <span>🇩🇿</span>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-[#284B2A] dark:text-green-300 leading-tight" id="siteTitle">Groupement Algérien de Développement Agricole</h1>
+                        <p class="text-xs text-gray-600 dark:text-gray-400" id="siteSubtitle">National Agricultural Development Consortium</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center space-x-8 rtl:space-x-reverse">
+                    <a href="#home" class="nav-link text-gray-700 dark:text-gray-300 hover:text-[#284B2A] dark:hover:text-green-300" data-key="navHome">Home</a>
+                    <a href="#about" class="nav-link text-gray-700 dark:text-gray-300 hover:text-[#284B2A] dark:hover:text-green-300" data-key="navAbout">About</a>
+                    <a href="#services" class="nav-link text-gray-700 dark:text-gray-300 hover:text-[#284B2A] dark:hover:text-green-300" data-key="navServices">Services</a>
+                    <a href="#projects" class="nav-link text-gray-700 dark:text-gray-300 hover:text-[#284B2A] dark:hover:text-green-300" data-key="navProjects">Programmes</a>
+                    <!-- Partners temporarily hidden – uncomment when ready -->
+                    <!-- <a href="#partners" class="nav-link" data-key="navPartners">Partners</a> -->
+                    <a href="#contact" class="nav-link text-gray-700 dark:text-gray-300 hover:text-[#284B2A] dark:hover:text-green-300" data-key="navContact">Contact</a>
+                </nav>
+
+                <!-- Mobile menu button -->
+                <button id="mobileMenuBtn" class="md:hidden p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700" aria-label="Toggle menu">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div id="mobileMenu" class="md:hidden hidden bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700">
+            <div class="container mx-auto px-4 py-3 flex flex-col space-y-3">
+                <a href="#home" class="nav-link py-2" data-key="navHome">Home</a>
+                <a href="#about" class="nav-link py-2" data-key="navAbout">About</a>
+                <a href="#services" class="nav-link py-2" data-key="navServices">Services</a>
+                <a href="#projects" class="nav-link py-2" data-key="navProjects">Programmes</a>
+                <!-- <a href="#partners" class="nav-link py-2" data-key="navPartners">Partners</a> -->
+                <a href="#contact" class="nav-link py-2" data-key="navContact">Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== HERO SECTION ===== (authoritative tone, no bounce) -->
+    <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden" style="background-image: url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2070&auto=format&fit=crop'); background-size: cover; background-position: center; background-attachment: fixed;">
+        <div class="absolute inset-0 hero-overlay"></div>
+        <div class="relative z-10 container mx-auto px-4 text-center text-white">
+            <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight max-w-5xl mx-auto animate-fade-up" id="heroTitle">Building the Future of Sustainable Agriculture in Algeria</h2>
+            <p class="text-xl md:text-2xl mb-10 max-w-3xl mx-auto opacity-90 animate-fade-up" style="animation-delay: 0.1s;" id="heroSubtitle">Groupement Algérien de Développement Agricole (GADA) – a state‑aligned consortium driving food security, agricultural modernization, and strategic investment.</p>
+            <a href="#services" class="inline-block bg-[#A68A38] hover:bg-[#8e7530] text-white font-semibold px-8 py-4 rounded-md transition-all hover:shadow-lg" id="heroCta">Explore Our Services</a>
+        </div>
+        <!-- subtle scroll hint (no bounce) -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/70">
+            <i data-lucide="chevron-down" class="w-6 h-6"></i>
+        </div>
+    </section>
+
+    <!-- ===== ABOUT SECTION ===== (structured: mission, vision, core objectives) -->
+    <section id="about" class="py-24 bg-gray-50 dark:bg-gray-800/50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="section-title text-[#284B2A] dark:text-green-300" id="aboutTitle">About GADA</h2>
+                <div class="gold-underline"></div>
+            </div>
+            <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-12">
+                <!-- Mission & Vision -->
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md">
+                    <h3 class="text-2xl font-bold text-[#284B2A] dark:text-green-300 mb-4" id="missionTitle">Our Mission</h3>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed" id="missionText">To transform Algeria’s agricultural sector through technical engineering, investment structuring, and digital monitoring – always aligned with national regulations and the Ministry of Agriculture’s strategic priorities.</p>
+                    <h3 class="text-2xl font-bold text-[#284B2A] dark:text-green-300 mt-8 mb-4" id="visionTitle">Our Vision</h3>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed" id="visionText">A modern, resilient agricultural economy that ensures food security, optimises natural resources, and positions Algeria as a regional leader in sustainable farming.</p>
+                </div>
+                <!-- Core Objectives (bullet style) -->
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md">
+                    <h3 class="text-2xl font-bold text-[#284B2A] dark:text-green-300 mb-6" id="objectivesTitle">Core Objectives</h3>
+                    <ul class="space-y-4 text-gray-700 dark:text-gray-300">
+                        <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 text-[#A68A38] mt-0.5 mr-3 flex-shrink-0"></i> <span id="obj1">Regulatory alignment with national agricultural policy</span></li>
+                        <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 text-[#A68A38] mt-0.5 mr-3 flex-shrink-0"></i> <span id="obj2">Engineering expertise for large‑scale projects</span></li>
+                        <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 text-[#A68A38] mt-0.5 mr-3 flex-shrink-0"></i> <span id="obj3">Digital integration (livestock satellite tracking, data analytics)</span></li>
+                        <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 text-[#A68A38] mt-0.5 mr-3 flex-shrink-0"></i> <span id="obj4">Investment structuring for domestic and international partners</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SERVICES SECTION ===== (clear target audience) -->
+    <section id="services" class="py-24">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="section-title text-[#284B2A] dark:text-green-300" id="servicesTitle">Our Services</h2>
+                <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mt-4" id="servicesSubtitle">Specialised solutions for investors, cooperatives, government bodies, and private sector stakeholders.</p>
+                <div class="gold-underline"></div>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md border border-transparent hover:border-[#A68A38] hover-lift">
+                    <i data-lucide="clipboard-check" class="w-10 h-10 text-[#284B2A] dark:text-green-300 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2" id="service1Title">Technical & Feasibility Studies</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3" id="service1For">For investors and government agencies</p>
+                    <p class="text-gray-700 dark:text-gray-300" id="service1Desc">In‑depth analysis of soil, water, and market conditions to ensure project viability and regulatory compliance.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md border border-transparent hover:border-[#A68A38] hover-lift">
+                    <i data-lucide="hand-coins" class="w-10 h-10 text-[#284B2A] dark:text-green-300 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2" id="service2Title">Agricultural Investment Advisory</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3" id="service2For">For private equity, development funds</p>
+                    <p class="text-gray-700 dark:text-gray-300" id="service2Desc">Structuring investment vehicles, connecting capital with bankable projects, and navigating local regulations.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md border border-transparent hover:border-[#A68A38] hover-lift">
+                    <i data-lucide="flask-conical" class="w-10 h-10 text-[#284B2A] dark:text-green-300 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2" id="service3Title">Laboratory Development</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3" id="service3For">For cooperatives and research institutions</p>
+                    <p class="text-gray-700 dark:text-gray-300" id="service3Desc">Turnkey establishment of soil, water, and plant analysis labs with training and equipment.</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md border border-transparent hover:border-[#A68A38] hover-lift">
+                    <i data-lucide="satellite" class="w-10 h-10 text-[#284B2A] dark:text-green-300 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2" id="service4Title">Digital Livestock Monitoring</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3" id="service4For">For livestock owners and ministry</p>
+                    <p class="text-gray-700 dark:text-gray-300" id="service4Desc">Satellite‑based tracking, health analytics, and farm management dashboards – improving herd productivity.</p>
+                </div>
+                <!-- Card 5 -->
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md border border-transparent hover:border-[#A68A38] hover-lift">
+                    <i data-lucide="truck" class="w-10 h-10 text-[#284B2A] dark:text-green-300 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2" id="service5Title">Equipment Import Structuring</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3" id="service5For">For importers and agricultural enterprises</p>
+                    <p class="text-gray-700 dark:text-gray-300" id="service5Desc">End‑to‑end support: customs clearance, financing, and supplier negotiation for agricultural machinery.</p>
+                </div>
+                <!-- Card 6 -->
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md border border-transparent hover:border-[#A68A38] hover-lift">
+                    <i data-lucide="wrench" class="w-10 h-10 text-[#284B2A] dark:text-green-300 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2" id="service6Title">Maintenance Network Development</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3" id="service6For">For equipment distributors and regions</p>
+                    <p class="text-gray-700 dark:text-gray-300" id="service6Desc">Establishing local technical support centres and training programmes to reduce downtime.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PROJECTS / IMPACT SECTION ===== (cautious wording) -->
+    <section id="projects" class="py-24 bg-gray-50 dark:bg-gray-800/50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="section-title text-[#284B2A] dark:text-green-300" id="projectsTitle">Strategic Development Programmes</h2>
+                <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mt-4" id="projectsSubtitle">Initiatives in progress – designed to modernise Algeria’s agricultural landscape.</p>
+                <div class="gold-underline"></div>
+            </div>
+            <!-- Counters (placeholder, not exaggerated) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-16">
+                <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-md">
+                    <div class="text-4xl font-bold text-[#284B2A] dark:text-green-300 counter" data-target="12">0</div>
+                    <p class="text-gray-600 dark:text-gray-400 mt-2" id="counterProjects">Pilot projects under development</p>
+                </div>
+                <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-md">
+                    <div class="text-4xl font-bold text-[#284B2A] dark:text-green-300 counter" data-target="8">0</div>
+                    <p class="text-gray-600 dark:text-gray-400 mt-2" id="counterInvestors">Investment structures in progress</p>
+                </div>
+                <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-md">
+                    <div class="text-4xl font-bold text-[#284B2A] dark:text-green-300 counter" data-target="3500">0</div>
+                    <p class="text-gray-600 dark:text-gray-400 mt-2" id="counterHectares">Hectares under technical assessment</p>
+                </div>
+            </div>
+            <!-- Programme cards (truthful: "in development") -->
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover-lift">
+                    <img src="https://images.unsplash.com/photo-1464226180484-05a7ee211c45?q=80&w=2070&auto=format&fit=crop" alt="Livestock monitoring" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2" id="project1Title">National Livestock Digitalisation</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2" id="project1Phase">Phase 1 planning – satellite tracking pilot</p>
+                        <p class="text-gray-700 dark:text-gray-300" id="project1Desc">Developing a centralised platform for livestock traceability and health monitoring in partnership with technical institutes.</p>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover-lift">
+                    <img src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=2072&auto=format&fit=crop" alt="Lab equipment" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2" id="project2Title">Agricultural Lab Infrastructure</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2" id="project2Phase">Feasibility study completed</p>
+                        <p class="text-gray-700 dark:text-gray-300" id="project2Desc">Establishment of three regional soil and water analysis labs – equipment procurement underway.</p>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover-lift">
+                    <img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?q=80&w=2070&auto=format&fit=crop" alt="Tractor" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2" id="project3Title">Strategic Equipment Framework</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2" id="project3Phase">Framework agreement in negotiation</p>
+                        <p class="text-gray-700 dark:text-gray-300" id="project3Desc">Structuring import channels for agricultural machinery with reduced lead times and maintenance packages.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PARTNERS SECTION (commented out as requested) ===== -->
+    <!-- 
+    <section id="partners" class="py-24"> ... </section>
+    -->
+
+    <!-- ===== CONTACT SECTION ===== (structured, no form) -->
+    <section id="contact" class="py-24">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="section-title text-[#284B2A] dark:text-green-300" id="contactTitle">Official Contact Channels</h2>
+                <div class="gold-underline"></div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+                <!-- Left: contact details -->
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md">
+                    <h3 class="text-2xl font-bold mb-6 text-[#284B2A] dark:text-green-300" id="contactInfoTitle">Headquarters</h3>
+                    <div class="space-y-5">
+                        <div class="flex items-start">
+                            <i data-lucide="mail" class="w-5 h-5 text-[#A68A38] mt-1 mr-4 flex-shrink-0"></i>
+                            <div>
+                                <p class="font-semibold" id="contactGeneralLabel">General Inquiries</p>
+                                <p class="text-gray-700 dark:text-gray-300" id="contactGeneralEmail">contact@gada.dz</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i data-lucide="mail" class="w-5 h-5 text-[#A68A38] mt-1 mr-4 flex-shrink-0"></i>
+                            <div>
+                                <p class="font-semibold" id="contactTechLabel">Technical Department</p>
+                                <p class="text-gray-700 dark:text-gray-300" id="contactTechEmail">tech@gada.dz</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i data-lucide="mail" class="w-5 h-5 text-[#A68A38] mt-1 mr-4 flex-shrink-0"></i>
+                            <div>
+                                <p class="font-semibold" id="contactInvestLabel">Investment & Partnerships</p>
+                                <p class="text-gray-700 dark:text-gray-300" id="contactInvestEmail">invest@gada.dz</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i data-lucide="phone" class="w-5 h-5 text-[#A68A38] mt-1 mr-4 flex-shrink-0"></i>
+                            <div>
+                                <p class="font-semibold" id="contactPhoneLabel">Main Line</p>
+                                <p class="text-gray-700 dark:text-gray-300" id="contactPhone">+213 (0) 23 45 67 89</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i data-lucide="map-pin" class="w-5 h-5 text-[#A68A38] mt-1 mr-4 flex-shrink-0"></i>
+                            <div>
+                                <p class="font-semibold" id="contactAddressLabel">Registered Address</p>
+                                <p class="text-gray-700 dark:text-gray-300" id="contactAddress">Cité des Nations, Lot n° 23, Algiers, Algeria</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i data-lucide="clock" class="w-5 h-5 text-[#A68A38] mt-1 mr-4 flex-shrink-0"></i>
+                            <div>
+                                <p class="font-semibold" id="contactHoursLabel">Office Hours</p>
+                                <p class="text-gray-700 dark:text-gray-300" id="contactHours">Monday – Thursday, 8:30 – 16:30 (appointments only)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Right: map placeholder + legal note -->
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md flex flex-col items-center justify-center">
+                    <i data-lucide="map" class="w-16 h-16 text-[#284B2A] dark:text-green-300 mb-4"></i>
+                    <p class="text-gray-600 dark:text-gray-400 text-center" id="mapPlaceholder">Map – headquarters location (Algiers)</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-500 mt-6 text-center" id="legalNote">All information is indicative and subject to official verification. Formal meetings by appointment only.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="bg-[#234123] text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 bg-[#A68A38] rounded-lg flex items-center justify-center mr-3 text-white font-bold text-xl">G</div>
+                        <h3 class="text-xl font-bold" id="footerTitle">GADA</h3>
+                    </div>
+                    <p class="text-white/80 text-sm" id="footerDesc">Groupement Algérien de Développement Agricole – National consortium for agricultural transformation.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4" id="footerQuick">Quick Links</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#about" class="text-white/80 hover:text-white" data-key="navAbout">About</a></li>
+                        <li><a href="#services" class="text-white/80 hover:text-white" data-key="navServices">Services</a></li>
+                        <li><a href="#projects" class="text-white/80 hover:text-white" data-key="navProjects">Programmes</a></li>
+                        <li><a href="#contact" class="text-white/80 hover:text-white" data-key="navContact">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4" id="footerResources">Resources</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-white/80 hover:text-white" id="footerReports">Annual Reports (PDF)</a></li>
+                        <li><a href="#" class="text-white/80 hover:text-white" id="footerResearch">Strategic Plan</a></li>
+                        <li><a href="#" class="text-white/80 hover:text-white" id="footerPrivacy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4" id="footerFollow">Follow Us</h4>
+                    <div class="flex space-x-4 rtl:space-x-reverse">
+                        <a href="#" class="text-white/80 hover:text-white"><i data-lucide="facebook"></i></a>
+                        <a href="#" class="text-white/80 hover:text-white"><i data-lucide="twitter"></i></a>
+                        <a href="#" class="text-white/80 hover:text-white"><i data-lucide="linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-white/20 mt-8 pt-8 text-center text-white/60 text-sm" id="footerCopyright">
+                © 2025 GADA – All rights reserved. This site is for informational purposes.
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== INLINE JAVASCRIPT (fully functional) ===== -->
+    <script>
+        (function() {
+            // ---------- TRANSLATIONS ----------
+            const translations = {
+                en: {
+                    siteTitle: "Groupement Algérien de Développement Agricole",
+                    siteSubtitle: "National Agricultural Development Consortium",
+                    navHome: "Home",
+                    navAbout: "About",
+                    navServices: "Services",
+                    navProjects: "Programmes",
+                    navContact: "Contact",
+                    heroTitle: "Building the Future of Sustainable Agriculture in Algeria",
+                    heroSubtitle: "Groupement Algérien de Développement Agricole (GADA) – a state‑aligned consortium driving food security, agricultural modernization, and strategic investment.",
+                    heroCta: "Explore Our Services",
+                    aboutTitle: "About GADA",
+                    missionTitle: "Our Mission",
+                    missionText: "To transform Algeria’s agricultural sector through technical engineering, investment structuring, and digital monitoring – always aligned with national regulations and the Ministry of Agriculture’s strategic priorities.",
+                    visionTitle: "Our Vision",
+                    visionText: "A modern, resilient agricultural economy that ensures food security, optimises natural resources, and positions Algeria as a regional leader in sustainable farming.",
+                    objectivesTitle: "Core Objectives",
+                    obj1: "Regulatory alignment with national agricultural policy",
+                    obj2: "Engineering expertise for large‑scale projects",
+                    obj3: "Digital integration (livestock satellite tracking, data analytics)",
+                    obj4: "Investment structuring for domestic and international partners",
+                    servicesTitle: "Our Services",
+                    servicesSubtitle: "Specialised solutions for investors, cooperatives, government bodies, and private sector stakeholders.",
+                    service1Title: "Technical & Feasibility Studies",
+                    service1For: "For investors and government agencies",
+                    service1Desc: "In‑depth analysis of soil, water, and market conditions to ensure project viability and regulatory compliance.",
+                    service2Title: "Agricultural Investment Advisory",
+                    service2For: "For private equity, development funds",
+                    service2Desc: "Structuring investment vehicles, connecting capital with bankable projects, and navigating local regulations.",
+                    service3Title: "Laboratory Development",
+                    service3For: "For cooperatives and research institutions",
+                    service3Desc: "Turnkey establishment of soil, water, and plant analysis labs with training and equipment.",
+                    service4Title: "Digital Livestock Monitoring",
+                    service4For: "For livestock owners and ministry",
+                    service4Desc: "Satellite‑based tracking, health analytics, and farm management dashboards – improving herd productivity.",
+                    service5Title: "Equipment Import Structuring",
+                    service5For: "For importers and agricultural enterprises",
+                    service5Desc: "End‑to‑end support: customs clearance, financing, and supplier negotiation for agricultural machinery.",
+                    service6Title: "Maintenance Network Development",
+                    service6For: "For equipment distributors and regions",
+                    service6Desc: "Establishing local technical support centres and training programmes to reduce downtime.",
+                    projectsTitle: "Strategic Development Programmes",
+                    projectsSubtitle: "Initiatives in progress – designed to modernise Algeria’s agricultural landscape.",
+                    counterProjects: "Pilot projects under development",
+                    counterInvestors: "Investment structures in progress",
+                    counterHectares: "Hectares under technical assessment",
+                    project1Title: "National Livestock Digitalisation",
+                    project1Phase: "Phase 1 planning – satellite tracking pilot",
+                    project1Desc: "Developing a centralised platform for livestock traceability and health monitoring in partnership with technical institutes.",
+                    project2Title: "Agricultural Lab Infrastructure",
+                    project2Phase: "Feasibility study completed",
+                    project2Desc: "Establishment of three regional soil and water analysis labs – equipment procurement underway.",
+                    project3Title: "Strategic Equipment Framework",
+                    project3Phase: "Framework agreement in negotiation",
+                    project3Desc: "Structuring import channels for agricultural machinery with reduced lead times and maintenance packages.",
+                    contactTitle: "Official Contact Channels",
+                    contactInfoTitle: "Headquarters",
+                    contactGeneralLabel: "General Inquiries",
+                    contactGeneralEmail: "contact@gada.dz",
+                    contactTechLabel: "Technical Department",
+                    contactTechEmail: "tech@gada.dz",
+                    contactInvestLabel: "Investment & Partnerships",
+                    contactInvestEmail: "invest@gada.dz",
+                    contactPhoneLabel: "Main Line",
+                    contactPhone: "+213 (0) 23 45 67 89",
+                    contactAddressLabel: "Registered Address",
+                    contactAddress: "Cité des Nations, Lot n° 23, Algiers, Algeria",
+                    contactHoursLabel: "Office Hours",
+                    contactHours: "Monday – Thursday, 8:30 – 16:30 (appointments only)",
+                    mapPlaceholder: "Map – headquarters location (Algiers)",
+                    legalNote: "All information is indicative and subject to official verification. Formal meetings by appointment only.",
+                    footerTitle: "GADA",
+                    footerDesc: "Groupement Algérien de Développement Agricole – National consortium for agricultural transformation.",
+                    footerQuick: "Quick Links",
+                    footerResources: "Resources",
+                    footerReports: "Annual Reports (PDF)",
+                    footerResearch: "Strategic Plan",
+                    footerPrivacy: "Privacy Policy",
+                    footerFollow: "Follow Us",
+                    footerCopyright: "© 2025 GADA – All rights reserved. This site is for informational purposes."
+                },
+                fr: {
+                    siteTitle: "Groupement Algérien de Développement Agricole",
+                    siteSubtitle: "Consortium national de développement agricole",
+                    navHome: "Accueil",
+                    navAbout: "À propos",
+                    navServices: "Services",
+                    navProjects: "Programmes",
+                    navContact: "Contact",
+                    heroTitle: "Construire l’avenir de l’agriculture durable en Algérie",
+                    heroSubtitle: "Groupement Algérien de Développement Agricole (GADA) – un consortium aligné sur l’État pour la sécurité alimentaire, la modernisation agricole et l’investissement stratégique.",
+                    heroCta: "Découvrir nos services",
+                    aboutTitle: "À propos de GADA",
+                    missionTitle: "Notre mission",
+                    missionText: "Transformer le secteur agricole algérien grâce à l’ingénierie technique, la structuration d’investissements et la surveillance numérique – toujours en conformité avec les réglementations nationales et les priorités du Ministère de l’Agriculture.",
+                    visionTitle: "Notre vision",
+                    visionText: "Une économie agricole moderne et résiliente garantissant la sécurité alimentaire, optimisant les ressources naturelles et positionnant l’Algérie comme leader régional de l’agriculture durable.",
+                    objectivesTitle: "Objectifs clés",
+                    obj1: "Alignement réglementaire avec la politique agricole nationale",
+                    obj2: "Expertise en ingénierie pour les projets à grande échelle",
+                    obj3: "Intégration numérique (suivi satellitaire du bétail, analyse de données)",
+                    obj4: "Structuration d’investissements pour partenaires nationaux et internationaux",
+                    servicesTitle: "Nos services",
+                    servicesSubtitle: "Solutions spécialisées pour investisseurs, coopératives, organismes publics et acteurs privés.",
+                    service1Title: "Études techniques et de faisabilité",
+                    service1For: "Pour investisseurs et administrations",
+                    service1Desc: "Analyse approfondie des sols, de l’eau et des marchés pour garantir la viabilité des projets et la conformité réglementaire.",
+                    service2Title: "Conseil en investissement agricole",
+                    service2For: "Pour fonds d’investissement, private equity",
+                    service2Desc: "Structuration de véhicules d’investissement, mise en relation avec des projets bancables et accompagnement réglementaire.",
+                    service3Title: "Développement de laboratoires",
+                    service3For: "Pour coopératives et instituts de recherche",
+                    service3Desc: "Mise en place clé en main de laboratoires d’analyse des sols, eau et plantes avec formation et équipements.",
+                    service4Title: "Suivi numérique du bétail",
+                    service4For: "Pour éleveurs et ministère",
+                    service4Desc: "Suivi satellitaire, analyses sanitaires et tableaux de bord de gestion – amélioration de la productivité des troupeaux.",
+                    service5Title: "Structuration d’importation d’équipements",
+                    service5For: "Pour importateurs et entreprises agricoles",
+                    service5Desc: "Accompagnement complet : dédouanement, financement, négociation fournisseurs pour machinerie agricole.",
+                    service6Title: "Développement de réseaux de maintenance",
+                    service6For: "Pour distributeurs d’équipements et régions",
+                    service6Desc: "Mise en place de centres techniques locaux et programmes de formation pour réduire les temps d’arrêt.",
+                    projectsTitle: "Programmes stratégiques de développement",
+                    projectsSubtitle: "Initiatives en cours – conçues pour moderniser le paysage agricole algérien.",
+                    counterProjects: "Projets pilotes en développement",
+                    counterInvestors: "Structurations d’investissement en cours",
+                    counterHectares: "Hectares sous évaluation technique",
+                    project1Title: "Digitalisation nationale de l’élevage",
+                    project1Phase: "Phase 1 – pilote de suivi satellitaire",
+                    project1Desc: "Développement d’une plateforme centralisée de traçabilité et suivi sanitaire avec instituts techniques.",
+                    project2Title: "Infrastructure de laboratoires agricoles",
+                    project2Phase: "Étude de faisabilité achevée",
+                    project2Desc: "Création de trois laboratoires régionaux d’analyse – acquisition d’équipements en cours.",
+                    project3Title: "Cadre stratégique d’équipement",
+                    project3Phase: "Accord-cadre en négociation",
+                    project3Desc: "Structuration de filières d’importation de machinerie agricole avec délais réduits et contrats de maintenance.",
+                    contactTitle: "Coordonnées officielles",
+                    contactInfoTitle: "Siège",
+                    contactGeneralLabel: "Demandes générales",
+                    contactGeneralEmail: "contact@gada.dz",
+                    contactTechLabel: "Département technique",
+                    contactTechEmail: "tech@gada.dz",
+                    contactInvestLabel: "Investissements & Partenariats",
+                    contactInvestEmail: "invest@gada.dz",
+                    contactPhoneLabel: "Standard",
+                    contactPhone: "+213 (0) 23 45 67 89",
+                    contactAddressLabel: "Adresse",
+                    contactAddress: "Cité des Nations, Lot n° 23, Alger, Algérie",
+                    contactHoursLabel: "Horaires",
+                    contactHours: "Lundi – jeudi, 8h30 – 16h30 (sur rendez‑vous)",
+                    mapPlaceholder: "Carte – emplacement du siège (Alger)",
+                    legalNote: "Les informations sont indicatives et sujettes à vérification officielle. Rencontres formelles sur rendez‑vous uniquement.",
+                    footerTitle: "GADA",
+                    footerDesc: "Groupement Algérien de Développement Agricole – Consortium national pour la transformation agricole.",
+                    footerQuick: "Liens rapides",
+                    footerResources: "Ressources",
+                    footerReports: "Rapports annuels (PDF)",
+                    footerResearch: "Plan stratégique",
+                    footerPrivacy: "Politique de confidentialité",
+                    footerFollow: "Suivez‑nous",
+                    footerCopyright: "© 2025 GADA – Tous droits réservés. Site à titre informatif."
+                },
+                ar: {
+                    siteTitle: "التجمّع الجزائري للتنمية الزراعية",
+                    siteSubtitle: "الاتحاد الوطني للتنمية الزراعية",
+                    navHome: "الرئيسية",
+                    navAbout: "من نحن",
+                    navServices: "خدماتنا",
+                    navProjects: "البرامج",
+                    navContact: "اتصل بنا",
+                    heroTitle: "نبني مستقبل الزراعة المستدامة في الجزائر",
+                    heroSubtitle: "التجمّع الجزائري للتنمية الزراعية – اتحاد موجه حكومياً لدفع الأمن الغذائي وتحديث الزراعة والاستثمار الاستراتيجي.",
+                    heroCta: "استكشف خدماتنا",
+                    aboutTitle: "حول التجمّع",
+                    missionTitle: "مهمتنا",
+                    missionText: "تحويل القطاع الزراعي الجزائري من خلال الهندسة التقنية وهيكلة الاستثمارات والمراقبة الرقمية – مع الالتزام باللوائح الوطنية وأولويات وزارة الفلاحة.",
+                    visionTitle: "رؤيتنا",
+                    visionText: "اقتصاد زراعي حديث ومرن يضمن الأمن الغذائي ويحسن استخدام الموارد الطبيعية ويجعل الجزائر رائدة إقليمية في الزراعة المستدامة.",
+                    objectivesTitle: "الأهداف الأساسية",
+                    obj1: "التوافق التنظيمي مع السياسة الزراعية الوطنية",
+                    obj2: "الخبرة الهندسية للمشاريع الكبرى",
+                    obj3: "التكامل الرقمي (تتبع الماشية عبر الأقمار الصناعية، تحليل البيانات)",
+                    obj4: "هيكلة الاستثمارات للشركاء المحليين والدوليين",
+                    servicesTitle: "خدماتنا",
+                    servicesSubtitle: "حلول متخصصة للمستثمرين والتعاونيات والجهات الحكومية والقطاع الخاص.",
+                    service1Title: "دراسات تقنية ودراسات الجدوى",
+                    service1For: "للمستثمرين والهيئات الحكومية",
+                    service1Desc: "تحليل معمق للتربة والمياه وظروف السوق لضمان جدوى المشاريع والامتثال التنظيمي.",
+                    service2Title: "استشارات الاستثمار الزراعي",
+                    service2For: "لصناديق الاستثمار والتنمية",
+                    service2Desc: "هيكلة أدوات الاستثمار وربط رأس المال بالمشاريع القابلة للتمويل مع التوجيه التنظيمي.",
+                    service3Title: "تطوير المختبرات",
+                    service3For: "للتعاونيات والمؤسسات البحثية",
+                    service3Desc: "إنشاء مختبرات تحليل التربة والمياه والنباتات مع التدريب والمعدات.",
+                    service4Title: "المراقبة الرقمية للثروة الحيوانية",
+                    service4For: "لمربي الماشية والوزارة",
+                    service4Desc: "تتبع عبر الأقمار الصناعية وتحليل صحي ولوحات إدارة المزارع – تحسين إنتاجية القطيع.",
+                    service5Title: "هيكلة استيراد المعدات",
+                    service5For: "للمستوردين والمؤسسات الزراعية",
+                    service5Desc: "دعم متكامل: التخليص الجمركي، التمويل، التفاوض مع الموردين للآلات الزراعية.",
+                    service6Title: "تطوير شبكات الصيانة",
+                    service6For: "لموزعي المعدات والمناطق",
+                    service6Desc: "إنشاء مراكز دعم فني محلية وبرامج تدريبية لتقليل وقت التوقف.",
+                    projectsTitle: "البرامج التنموية الاستراتيجية",
+                    projectsSubtitle: "مبادرات قيد التنفيذ – تهدف إلى تحديث المشهد الزراعي الجزائري.",
+                    counterProjects: "مشروع تجريبي قيد التطوير",
+                    counterInvestors: "هيكل استثماري قيد الإعداد",
+                    counterHectares: "هكتار تحت التقييم الفني",
+                    project1Title: "الرقمنة الوطنية للثروة الحيوانية",
+                    project1Phase: "المرحلة 1 – تجربة التتبع عبر الأقمار الصناعية",
+                    project1Desc: "تطوير منصة مركزية لتتبع الثروة الحيوانية والمراقبة الصحية بالشراكة مع المعاهد التقنية.",
+                    project2Title: "البنية التحتية للمختبرات الزراعية",
+                    project2Phase: "دراسة الجدوى مكتملة",
+                    project2Desc: "إنشاء ثلاثة مختبرات جهوية لتحليل التربة والمياه – شراء المعدات جارٍ.",
+                    project3Title: "الإطار الاستراتيجي للمعدات",
+                    project3Phase: "اتفاقية إطار قيد التفاوض",
+                    project3Desc: "هيكلة قنوات استيراد الآلات الزراعية مع تقليل المهل وحزم الصيانة.",
+                    contactTitle: "قنوات الاتصال الرسمية",
+                    contactInfoTitle: "المقر الرئيسي",
+                    contactGeneralLabel: "استفسارات عامة",
+                    contactGeneralEmail: "contact@gada.dz",
+                    contactTechLabel: "القسم التقني",
+                    contactTechEmail: "tech@gada.dz",
+                    contactInvestLabel: "الاستثمار والشراكات",
+                    contactInvestEmail: "invest@gada.dz",
+                    contactPhoneLabel: "الهاتف",
+                    contactPhone: "+213 (0) 23 45 67 89",
+                    contactAddressLabel: "العنوان",
+                    contactAddress: "مدينة الأمم، القطعة 23، الجزائر العاصمة، الجزائر",
+                    contactHoursLabel: "ساعات العمل",
+                    contactHours: "الإثنين – الخميس، 8:30 – 16:30 (بالموعد فقط)",
+                    mapPlaceholder: "خريطة – موقع المقر الرئيسي (الجزائر)",
+                    legalNote: "جميع المعلومات إرشادية وتخضع للتحقق الرسمي. اللقاءات الرسمية بالموعد فقط.",
+                    footerTitle: "التجمّع",
+                    footerDesc: "التجمّع الجزائري للتنمية الزراعية – الاتحاد الوطني للتحول الزراعي.",
+                    footerQuick: "روابط سريعة",
+                    footerResources: "الموارد",
+                    footerReports: "التقارير السنوية (PDF)",
+                    footerResearch: "الخطة الاستراتيجية",
+                    footerPrivacy: "سياسة الخصوصية",
+                    footerFollow: "تابعنا",
+                    footerCopyright: "© 2025 التجمّع الجزائري للتنمية الزراعية – جميع الحقوق محفوظة. هذا الموقع لأغراض إعلامية."
+                }
+            };
+
+            // ---------- STATE ----------
+            let currentLang = localStorage.getItem('gadaLang') || 'en';
+            let darkMode = localStorage.getItem('gadaTheme') === 'dark';
+
+            // DOM elements
+            const html = document.documentElement;
+            const langToggleBtn = document.getElementById('langToggleBtn');
+            const langMenu = document.getElementById('langMenu');
+            const currentLangSpan = document.getElementById('currentLangDisplay');
+            const langOptions = document.querySelectorAll('.lang-option');
+            const themeToggle = document.getElementById('themeToggleBtn');
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const header = document.getElementById('mainHeader');
+
+            // ---------- INIT ----------
+            function init() {
+                applyTheme();
+                applyLanguage();
+                setupListeners();
+                setupScrollEffect();
+                setupCounters();
+                // Recreate icons after DOM ready
+                lucide.createIcons();
+            }
+
+            function applyTheme() {
+                if (darkMode) {
+                    html.classList.add('dark');
+                } else {
+                    html.classList.remove('dark');
+                }
+                lucide.createIcons(); // update icons (sun/moon)
+            }
+
+            function toggleTheme() {
+                darkMode = !darkMode;
+                localStorage.setItem('gadaTheme', darkMode ? 'dark' : 'light');
+                applyTheme();
+            }
+
+            function applyLanguage() {
+                // Set dir and font class
+                if (currentLang === 'ar') {
+                    html.dir = 'rtl';
+                    html.classList.add('font-arabic');
+                    html.classList.remove('font-french');
+                } else if (currentLang === 'fr') {
+                    html.dir = 'ltr';
+                    html.classList.add('font-french');
+                    html.classList.remove('font-arabic');
+                } else {
+                    html.dir = 'ltr';
+                    html.classList.remove('font-arabic', 'font-french');
+                }
+
+                // Update display
+                currentLangSpan.textContent = currentLang.toUpperCase();
+
+                // Update checkmarks
+                document.querySelectorAll('[id^="check-"]').forEach(el => el.style.display = 'none');
+                const check = document.getElementById(`check-${currentLang}`);
+                if (check) check.style.display = 'block';
+
+                // Translate all elements with id matching keys
+                const t = translations[currentLang];
+                for (let key in t) {
+                    const el = document.getElementById(key);
+                    if (el) el.textContent = t[key];
+                }
+
+                lucide.createIcons(); // refresh icons (for RTL arrows etc)
+            }
+
+            function changeLanguage(lang) {
+                if (translations[lang]) {
+                    currentLang = lang;
+                    localStorage.setItem('gadaLang', lang);
+                    applyLanguage();
+                }
+            }
+
+            // ---------- EVENT LISTENERS ----------
+            function setupListeners() {
+                // Language dropdown toggle
+                langToggleBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const expanded = langToggleBtn.getAttribute('aria-expanded') === 'true' ? false : true;
+                    langToggleBtn.setAttribute('aria-expanded', expanded);
+                    langMenu.classList.toggle('hidden');
+                });
+
+                // Close dropdown when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!langToggleBtn.contains(e.target) && !langMenu.contains(e.target)) {
+                        langMenu.classList.add('hidden');
+                        langToggleBtn.setAttribute('aria-expanded', 'false');
+                    }
+                });
+
+                // Language options
+                langOptions.forEach(opt => {
+                    opt.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const lang = opt.dataset.lang;
+                        changeLanguage(lang);
+                        langMenu.classList.add('hidden');
+                        langToggleBtn.setAttribute('aria-expanded', 'false');
+                    });
+                });
+
+                // Theme toggle
+                themeToggle.addEventListener('click', toggleTheme);
+
+                // Mobile menu
+                mobileMenuBtn.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                    const icon = mobileMenuBtn.querySelector('i');
+                    if (mobileMenu.classList.contains('hidden')) {
+                        icon.setAttribute('data-lucide', 'menu');
+                    } else {
+                        icon.setAttribute('data-lucide', 'x');
+                    }
+                    lucide.createIcons();
+                });
+
+                // Close mobile menu when clicking a link
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.addEventListener('click', () => {
+                        mobileMenu.classList.add('hidden');
+                        const icon = mobileMenuBtn.querySelector('i');
+                        icon.setAttribute('data-lucide', 'menu');
+                        lucide.createIcons();
+                    });
+                });
+
+                // Smooth scroll for anchor links
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const target = document.querySelector(this.getAttribute('href'));
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    });
+                });
+            }
+
+            // Navbar background change on scroll
+            function setupScrollEffect() {
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 50) {
+                        header.classList.add('bg-white/90', 'dark:bg-gray-800/90', 'backdrop-blur-sm', 'shadow-sm');
+                        header.classList.remove('bg-transparent');
+                    } else {
+                        header.classList.remove('bg-white/90', 'dark:bg-gray-800/90', 'backdrop-blur-sm', 'shadow-sm');
+                        header.classList.add('bg-transparent');
+                    }
+                });
+            }
+
+            // Counters animation
+            function setupCounters() {
+                const counters = document.querySelectorAll('.counter');
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const counter = entry.target;
+                            const target = +counter.getAttribute('data-target');
+                            let count = 0;
+                            const increment = target / 80; // smooth increment
+                            const update = () => {
+                                count += increment;
+                                if (count < target) {
+                                    counter.innerText = Math.ceil(count);
+                                    requestAnimationFrame(update);
+                                } else {
+                                    counter.innerText = target;
+                                }
+                            };
+                            update();
+                            observer.unobserve(counter);
+                        }
+                    });
+                }, { threshold: 0.5 });
+                counters.forEach(c => observer.observe(c));
+            }
+
+            // Start everything
+            document.addEventListener('DOMContentLoaded', init);
+        })();
+    </script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
